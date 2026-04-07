@@ -33,6 +33,7 @@
   <h1>Admin Panel 🔐</h1>
   <p id="status"></p>
   <button onclick="downloadCSV()">Download Users CSV</button>
+  <button onclick="logout()">Logout</button>
 </div>
 
 <script type="module">
@@ -83,6 +84,11 @@
     a.click();
   };
 </script>
-
+<script>
+function logout() {
+  localStorage.clear();
+  window.location.href = "index.html";
+}
+</script>
 </body>
 </html>
