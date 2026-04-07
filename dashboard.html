@@ -8,7 +8,7 @@
       color: white;
       font-family: Arial;
       text-align: center;
-      margin-top: 100px;
+      margin-top: 50px;
     }
     .box {
       background: #1e293b;
@@ -16,29 +16,89 @@
       border-radius: 12px;
       display: inline-block;
     }
+    input {
+      display: block;
+      margin: 10px auto;
+      padding: 8px;
+      border-radius: 6px;
+      border: none;
+    }
+    button {
+      padding: 10px;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #38bdf8;
+      cursor: pointer;
+    }
   </style>
 </head>
 
 <body>
 
 <div class="box">
-  <h1>Welcome 🎉</h1>
-  <p id="email"></p>
-  <p id="uid"></p>
-  <button onclick="logout()">Logout</button>
+  <h2>User Details</h2>
+
+  <input id="name" placeholder="Full Name">
+  <input id="nickname" placeholder="Nickname">
+  <input id="address" placeholder="Address">
+
+  <button onclick="saveData()">Save</button>
+  <button onclick="downloadCSV()">Download CSV</button>
+
+  <p id="msg"></p>
 </div>
 
-<script>
-  let email = localStorage.getItem("userEmail");
-  let uid = localStorage.getItem("uid");
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+  import { getFirestore, doc, setDoc, getDocs, collection } 
+  from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
-  document.getElementById("email").innerText = "Email: " + email;
-  document.getElementById("uid").innerText = "UID: " + uid;
+  const firebaseConfig = {
+    apiKey: "AIzaSyCvoBzRgAHBoW373aeiq5i3boJfloBDibM",
+    authDomain: "fir-login-803c8.firebaseapp.com",
+    projectId: "fir-login-803c8",
+    storageBucket: "fir-login-803c8.firebasestorage.app",
+    messagingSenderId: "965567895026",
+    appId: "1:965567895026:web:1314207e9f0d04881ec76b"
+  };
 
-  function logout() {
-    localStorage.clear();
-    window.location.href = "index.html";
-  }
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // SAVE DATA
+  window.saveData = async function () {
+    let uid = localStorage.getItem("uid");
+
+    await setDoc(doc(db, "users", uid), {
+      name: document.getElementById("name").value,
+      nickname: document.getElementById("nickname").value,
+      address: document.getElementById("address").value,
+      email: localStorage.getItem("userEmail")
+    });
+
+    document.getElementById("msg").innerText = "Data Saved ✅";
+  };
+
+  // DOWNLOAD CSV
+  window.downloadCSV = async function () {
+    const querySnapshot = await getDocs(collection(db, "users"));
+
+    let csv = "Name,Nickname,Address,Email\n";
+
+    querySnapshot.forEach((doc) => {
+      let d = doc.data();
+      csv += `${d.name},${d.nickname},${d.address},${d.email}\n`;
+    });
+
+    let blob = new Blob([csv], { type: "text/csv" });
+    let url = URL.createObjectURL(blob);
+
+    let a = document.createElement("a");
+    a.href = url;
+    a.download = "users.csv";
+    a.click();
+  };
 </script>
 
 </body>
