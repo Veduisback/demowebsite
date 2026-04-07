@@ -56,8 +56,23 @@
       font-size: 14px;
     }
   </style>
+</head>
 
-  <script type="module">
+<body>
+
+<div class="container">
+  <h1>Login 🚀</h1>
+
+  <input id="username" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+
+  <button onclick="signup()">Signup</button>
+  <button onclick="login()">Login</button>
+
+  <p id="msg"></p>
+</div>
+
+<script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } 
   from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
@@ -74,11 +89,18 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-  const adminEmail = "admin@gmail.com"; // 👈 IMPORTANT
+  // 🔐 SET YOUR ADMIN EMAIL HERE
+  const adminEmail = "admin@gmail.com";
 
+  // SIGNUP
   window.signup = function () {
     let user = document.getElementById("username").value;
     let pass = document.getElementById("password").value;
+
+    if (!user || !pass) {
+      document.getElementById("msg").innerText = "Fill all fields ❌";
+      return;
+    }
 
     createUserWithEmailAndPassword(auth, user, pass)
       .then(() => {
@@ -89,15 +111,23 @@
       });
   };
 
+  // LOGIN
   window.login = function () {
     let user = document.getElementById("username").value;
     let pass = document.getElementById("password").value;
 
-    signInWithEmailAndPassword(auth, user, pass)
-      .then(() => {
-        localStorage.setItem("userEmail", user);
+    if (!user || !pass) {
+      document.getElementById("msg").innerText = "Fill all fields ❌";
+      return;
+    }
 
-        // 🔥 REDIRECT LOGIC
+    signInWithEmailAndPassword(auth, user, pass)
+      .then((userCredential) => {
+        // 🔥 IMPORTANT: store session
+        localStorage.setItem("userEmail", user);
+        localStorage.setItem("uid", userCredential.user.uid);
+
+        // 🔀 redirect
         if (user === adminEmail) {
           window.location.href = "admin.html";
         } else {
@@ -109,22 +139,6 @@
       });
   };
 </script>
-</head>
-
-<body>
-
-<div class="container">
-  <h1>Login 🚀</h1>
-
-  <input id="username" placeholder="Username">
-  <input id="password" type="password" placeholder="Password">
-
-  <button onclick="signup()">Signup</button>
-  <button onclick="login()">Login</button>
-
-  <p id="msg"></p>
-</div>
-
 
 </body>
 </html>
