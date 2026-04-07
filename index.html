@@ -71,22 +71,35 @@
   <p id="msg"></p>
 </div>
 
-<script>
-function handleLogin() {
-  let user = document.getElementById("username").value;
-  let pass = document.getElementById("password").value;
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 
-  if(user === "" || pass === "") {
-    document.getElementById("msg").innerText = "Enter all fields!";
-    return;
-  }
+  const firebaseConfig = {
+    apiKey: "AIzaSyCvoBzRgAHBoW373aeiq5i3boJfloBDibM",
+    authDomain: "fir-login-803c8.firebaseapp.com",
+    projectId: "fir-login-803c8",
+    storageBucket: "fir-login-803c8.firebasestorage.app",
+    messagingSenderId: "965567895026",
+    appId: "1:965567895026:web:1314207e9f0d04881ec76b"
+  };
 
-  document.getElementById("msg").innerText = 
-    "Welcome " + user + " 😎 (frontend only)";
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-  console.log("Username:", user);
-  console.log("Password:", pass);
-}
+  // 👇 THIS IS THE MISSING PART
+  window.handleLogin = function () {
+    let user = document.getElementById("username").value;
+    let pass = document.getElementById("password").value;
+
+    createUserWithEmailAndPassword(auth, user, pass)
+      .then(() => {
+        document.getElementById("msg").innerText = "Registered Successfully ✅";
+      })
+      .catch((error) => {
+        document.getElementById("msg").innerText = error.message;
+      });
+  };
 </script>
 
 </body>
