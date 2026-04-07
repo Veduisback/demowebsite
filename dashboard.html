@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+  <style>
+    body {
+      background: #0f172a;
+      color: white;
+      font-family: Arial;
+      text-align: center;
+      margin-top: 100px;
+    }
+    .box {
+      background: #1e293b;
+      padding: 30px;
+      border-radius: 12px;
+      display: inline-block;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+  <h1>Welcome 🎉</h1>
+  <p id="email"></p>
+  <p id="uid"></p>
+  <button onclick="logout()">Logout</button>
+</div>
+
+<script>
+  let email = localStorage.getItem("userEmail");
+  let uid = localStorage.getItem("uid");
+
+  document.getElementById("email").innerText = "Email: " + email;
+  document.getElementById("uid").innerText = "UID: " + uid;
+
+  function logout() {
+    localStorage.clear();
+    window.location.href = "index.html";
+  }
+</script>
+
+</body>
+</html>
