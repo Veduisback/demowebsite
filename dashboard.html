@@ -22,6 +22,7 @@
       padding: 8px;
       border-radius: 6px;
       border: none;
+      width: 200px;
     }
     button {
       padding: 10px;
@@ -30,6 +31,9 @@
       border-radius: 8px;
       background: #38bdf8;
       cursor: pointer;
+    }
+    button:hover {
+      background: #0ea5e9;
     }
   </style>
 </head>
@@ -51,7 +55,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-  import { getFirestore, doc, setDoc, getDocs, collection } 
+  import { getFirestore, doc, setDoc, getDoc } 
   from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -66,9 +70,34 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // SAVE DATA
+  const uid = localStorage.getItem("uid");
+
+  // 🔐 Protect page (must be logged in)
+  if (!uid) {
+    window.location.href = "index.html";
+  }
+
+  // 🔄 Load existing data (prefill)
+  async function loadData() {
+    const docRef = doc(db, "users", uid);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      document.getElementById("name").value = data.name || "";
+      document.getElementById("nickname").value = data.nickname || "";
+      document.getElementById("address").value = data.address || "";
+    }
+  }
+
+  loadData();
+
+  // 💾 Save data
   window.saveData = async function () {
-    let uid = localStorage.getItem("uid");
+    if (!uid) {
+      document.getElementById("msg").innerText = "Not logged in ❌";
+      return;
+    }
 
     await setDoc(doc(db, "users", uid), {
       name: document.getElementById("name").value,
@@ -79,14 +108,13 @@
 
     document.getElementById("msg").innerText = "Data Saved ✅";
   };
-
 </script>
-<script>
-function logout() {
-  localStorage.clear();
-  window.location.href = "index.html";
-}  
 
+<script>
+  function logout() {
+    localStorage.clear();
+    window.location.href = "index.html";
+  }
 </script>
 
 </body>
