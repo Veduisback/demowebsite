@@ -73,7 +73,8 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } 
+  from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCvoBzRgAHBoW373aeiq5i3boJfloBDibM",
@@ -87,17 +88,34 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-  // 👇 THIS IS THE MISSING PART
-  window.handleLogin = function () {
+  // SIGNUP
+  window.signup = function () {
     let user = document.getElementById("username").value;
     let pass = document.getElementById("password").value;
 
     createUserWithEmailAndPassword(auth, user, pass)
       .then(() => {
-        document.getElementById("msg").innerText = "Registered Successfully ✅";
+        document.getElementById("msg").innerText = "Signup Success ✅";
       })
-      .catch((error) => {
-        document.getElementById("msg").innerText = error.message;
+      .catch(err => {
+        document.getElementById("msg").innerText = err.message;
+      });
+  };
+
+  // LOGIN
+  window.login = function () {
+    let user = document.getElementById("username").value;
+    let pass = document.getElementById("password").value;
+
+    signInWithEmailAndPassword(auth, user, pass)
+      .then((userCredential) => {
+        localStorage.setItem("userEmail", user);
+        localStorage.setItem("uid", userCredential.user.uid);
+
+        window.location.href = "dashboard.html";
+      })
+      .catch(err => {
+        document.getElementById("msg").innerText = "Login Failed ❌";
       });
   };
 </script>
