@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Panel</title>
+  <style>
+    body {
+      background: #0f172a;
+      color: white;
+      font-family: Arial;
+      text-align: center;
+      margin-top: 50px;
+    }
+    .box {
+      background: #1e293b;
+      padding: 30px;
+      border-radius: 12px;
+      display: inline-block;
+    }
+    button {
+      padding: 10px;
+      margin: 10px;
+      border-radius: 8px;
+      border: none;
+      background: #38bdf8;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+  <h1>Admin Panel 🔐</h1>
+  <p id="status"></p>
+  <button onclick="downloadCSV()">Download Users CSV</button>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+  import { getFirestore, getDocs, collection } 
+  from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCvoBzRgAHBoW373aeiq5i3boJfloBDibM",
+    authDomain: "fir-login-803c8.firebaseapp.com",
+    projectId: "fir-login-803c8",
+    storageBucket: "fir-login-803c8.firebasestorage.app",
+    messagingSenderId: "965567895026",
+    appId: "1:965567895026:web:1314207e9f0d04881ec76b"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // 🔐 ADMIN CHECK
+  const adminEmail = "PUT_YOUR_EMAIL_HERE";
+
+  const currentUser = localStorage.getItem("userEmail");
+
+  if (currentUser !== adminEmail) {
+    document.body.innerHTML = "<h1>Access Denied ❌</h1>";
+  } else {
+    document.getElementById("status").innerText = "Welcome Admin ✅";
+  }
+
+  // 📥 DOWNLOAD CSV
+  window.downloadCSV = async function () {
+    const querySnapshot = await getDocs(collection(db, "users"));
+
+    let csv = "Name,Nickname,Address,Email\n";
+
+    querySnapshot.forEach((doc) => {
+      let d = doc.data();
+      csv += `${d.name},${d.nickname},${d.address},${d.email}\n`;
+    });
+
+    let blob = new Blob([csv], { type: "text/csv" });
+    let url = URL.createObjectURL(blob);
+
+    let a = document.createElement("a");
+    a.href = url;
+    a.download = "users.csv";
+    a.click();
+  };
+</script>
+
+</body>
+</html>
