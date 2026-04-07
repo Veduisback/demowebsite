@@ -1,10 +1,93 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>My First Site</title>
+  <title>Veduisback Login</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      background: #1e293b;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      text-align: center;
+      width: 300px;
+    }
+
+    h1 {
+      color: #38bdf8;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #38bdf8;
+      border: none;
+      border-radius: 8px;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0ea5e9;
+    }
+
+    p {
+      color: #cbd5f5;
+      font-size: 14px;
+    }
+  </style>
 </head>
+
 <body>
-  <h1>Hello Veduisback 🚀</h1>
-  <p>This is my GitHub Pages website.</p>
+
+<div class="container">
+  <h1>Login 🚀</h1>
+
+  <input id="username" placeholder="Username">
+  <input id="password" type="password" placeholder="Password">
+
+  <button onclick="handleLogin()">Login</button>
+
+  <p id="msg"></p>
+</div>
+
+<script>
+function handleLogin() {
+  let user = document.getElementById("username").value;
+  let pass = document.getElementById("password").value;
+
+  if(user === "" || pass === "") {
+    document.getElementById("msg").innerText = "Enter all fields!";
+    return;
+  }
+
+  document.getElementById("msg").innerText = 
+    "Welcome " + user + " 😎 (frontend only)";
+
+  console.log("Username:", user);
+  console.log("Password:", pass);
+}
+</script>
+
 </body>
 </html>
