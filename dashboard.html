@@ -44,7 +44,7 @@
   <input id="address" placeholder="Address">
 
   <button onclick="saveData()">Save</button>
-  <button onclick="downloadCSV()">Download CSV</button>
+  
 
   <p id="msg"></p>
 </div>
@@ -81,24 +81,7 @@
   };
 
   // DOWNLOAD CSV
-  window.downloadCSV = async function () {
-    const querySnapshot = await getDocs(collection(db, "users"));
 
-    let csv = "Name,Nickname,Address,Email\n";
-
-    querySnapshot.forEach((doc) => {
-      let d = doc.data();
-      csv += `${d.name},${d.nickname},${d.address},${d.email}\n`;
-    });
-
-    let blob = new Blob([csv], { type: "text/csv" });
-    let url = URL.createObjectURL(blob);
-
-    let a = document.createElement("a");
-    a.href = url;
-    a.download = "users.csv";
-    a.click();
-  };
 </script>
 
 </body>
