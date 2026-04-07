@@ -27,13 +27,10 @@
     button {
       padding: 10px;
       margin: 10px;
-      border: none;
       border-radius: 8px;
+      border: none;
       background: #38bdf8;
       cursor: pointer;
-    }
-    button:hover {
-      background: #0ea5e9;
     }
   </style>
 </head>
@@ -47,8 +44,8 @@
   <input id="nickname" placeholder="Nickname">
   <input id="address" placeholder="Address">
 
-  <button onclick="saveData()">Save</button>
-  <button onclick="logout()">Logout</button>
+  <button id="saveBtn">Save</button>
+  <button id="logoutBtn">Logout</button>
 
   <p id="msg"></p>
 </div>
@@ -72,33 +69,28 @@
 
   const uid = localStorage.getItem("uid");
 
-  // 🔐 Protect page (must be logged in)
+  // 🔐 protect page
   if (!uid) {
     window.location.href = "index.html";
   }
 
-  // 🔄 Load existing data (prefill)
+  // 🔄 load existing data
   async function loadData() {
     const docRef = doc(db, "users", uid);
-    const docSnap = await getDoc(docRef);
+    const snap = await getDoc(docRef);
 
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      document.getElementById("name").value = data.name || "";
-      document.getElementById("nickname").value = data.nickname || "";
-      document.getElementById("address").value = data.address || "";
+    if (snap.exists()) {
+      const d = snap.data();
+      document.getElementById("name").value = d.name || "";
+      document.getElementById("nickname").value = d.nickname || "";
+      document.getElementById("address").value = d.address || "";
     }
   }
 
   loadData();
 
-  // 💾 Save data
-  window.saveData = async function () {
-    if (!uid) {
-      document.getElementById("msg").innerText = "Not logged in ❌";
-      return;
-    }
-
+  // 💾 SAVE BUTTON FIX
+  document.getElementById("saveBtn").addEventListener("click", async () => {
     await setDoc(doc(db, "users", uid), {
       name: document.getElementById("name").value,
       nickname: document.getElementById("nickname").value,
@@ -107,14 +99,14 @@
     });
 
     document.getElementById("msg").innerText = "Data Saved ✅";
-  };
-</script>
+  });
 
-<script>
-  function logout() {
+  // 🚪 LOGOUT FIX
+  document.getElementById("logoutBtn").addEventListener("click", () => {
     localStorage.clear();
     window.location.href = "index.html";
-  }
+  });
+
 </script>
 
 </body>
