@@ -56,23 +56,8 @@
       font-size: 14px;
     }
   </style>
-</head>
 
-<body>
-
-<div class="container">
-  <h1>Login 🚀</h1>
-
-  <input id="username" placeholder="Username">
-  <input id="password" type="password" placeholder="Password">
-
-  <button onclick="signup()">Signup</button>
-  <button onclick="login()">Login</button>
-
-  <p id="msg"></p>
-</div>
-
-<script type="module">
+  <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } 
   from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
@@ -89,7 +74,8 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-  // SIGNUP
+  const adminEmail = "PUT_YOUR_EMAIL_HERE"; // 👈 IMPORTANT
+
   window.signup = function () {
     let user = document.getElementById("username").value;
     let pass = document.getElementById("password").value;
@@ -103,23 +89,42 @@
       });
   };
 
-  // LOGIN
   window.login = function () {
     let user = document.getElementById("username").value;
     let pass = document.getElementById("password").value;
 
     signInWithEmailAndPassword(auth, user, pass)
-      .then((userCredential) => {
+      .then(() => {
         localStorage.setItem("userEmail", user);
-        localStorage.setItem("uid", userCredential.user.uid);
 
-        window.location.href = "dashboard.html";
+        // 🔥 REDIRECT LOGIC
+        if (user === adminEmail) {
+          window.location.href = "admin.html";
+        } else {
+          window.location.href = "dashboard.html";
+        }
       })
-      .catch(err => {
+      .catch(() => {
         document.getElementById("msg").innerText = "Login Failed ❌";
       });
   };
 </script>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>Login 🚀</h1>
+
+  <input id="username" placeholder="Username">
+  <input id="password" type="password" placeholder="Password">
+
+  <button onclick="signup()">Signup</button>
+  <button onclick="login()">Login</button>
+
+  <p id="msg"></p>
+</div>
+
 
 </body>
 </html>
