@@ -27,15 +27,6 @@
       margin-bottom: 20px;
     }
 
-    input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 8px;
-      outline: none;
-    }
-
     button {
       width: 100%;
       padding: 10px;
@@ -63,16 +54,19 @@
 <div class="container">
   <h1>Login 🚀</h1>
 
-  <input id="username" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
-
   <button onclick="googleLogin()">Sign in with Google</button>
-<p id="msg"></p>
+
+  <p id="msg"></p>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup } 
-from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+import { 
+  getAuth, 
+  GoogleAuthProvider, 
+  signInWithRedirect, 
+  getRedirectResult 
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCvoBzRgAHBoW373aeiq5i3boJfloBDibM",
@@ -89,27 +83,32 @@ const provider = new GoogleAuthProvider();
 
 const adminEmail = "admin@gmail.com"; // change if needed
 
+// 🔥 LOGIN BUTTON
 window.googleLogin = function () {
-  signInWithPopup(auth, provider)
-    .then((result) => {
+  signInWithRedirect(auth, provider);
+};
+
+// 🔥 HANDLE REDIRECT RESULT
+getRedirectResult(auth)
+  .then((result) => {
+    if (result) {
       const user = result.user;
 
-      // 🔥 store session
       localStorage.setItem("uid", user.uid);
       localStorage.setItem("userEmail", user.email);
 
-      // 🔀 redirect
       if (user.email === adminEmail) {
         window.location.href = "admin.html";
       } else {
         window.location.href = "dashboard.html";
       }
-    })
-    .catch((error) => {
-      document.getElementById("msg").innerText = "Login Failed ❌";
-      console.error(error);
-    });
-};
+    }
+  })
+  .catch((error) => {
+    document.getElementById("msg").innerText = error.message;
+    console.error(error);
+  });
+
 </script>
 
 </body>
